@@ -1,13 +1,3 @@
-// ======================================================
-// Arquivo humanizado: versão gerada automaticamente pelo assistente.
-// Objetivo: tornar cabeçalhos e comentários mais naturais em Português
-// Sem alterações de lógica — comportamento idêntico ao arquivo original.
-// Se quiser que eu faça mudanças mais profundas (renomear variáveis,
-// reescrever comentários função-a-função, ou simplificar trechos),
-// diga e eu gero uma versão mais trabalhada para cada arquivo.
-// ======================================================
-
-
 const { body, validationResult } = require('express-validator');
 
 const aplicarValidacao = (req, res, next) => {
