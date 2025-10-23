@@ -1,5 +1,7 @@
 # Portfólio Acadêmico Web
 
+Um site para alunos de Engenharia de Software mostrarem seus projetos e habilidades. Usa Node.js (com EJS), MongoDB e PostgreSQL.
+
 ## O Que Precisa Ter Instalado:
 
 * Node.js e npm
