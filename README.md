@@ -40,5 +40,5 @@ Um site para alunos de Engenharia de Software mostrarem seus projetos e habilida
     ```
     *(Espere pelas mensagens "conectado com sucesso" e "Servidor rodando...")*
 
-6.  **Aceder ao Site:**
+6.  **Acessar ao Site:**
     Abra o navegador em: **`http://localhost:5000`**
