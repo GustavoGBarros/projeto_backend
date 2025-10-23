@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof titulo !== 'undefined' ? titulo : 'Portfólio de Projetos' %></title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <header>
+        <h1>Portfólio de Projetos dos Alunos</h1>
+        <nav id="nav-botoes">
+            <button id="admin-panel-btn" class="hidden">Painel Admin</button>
+            <button id="login-btn">Login</button>
+            <button id="my-knowledge-btn" class="hidden">Meus Conhecimentos</button>
+            <button id="add-project-btn" class="hidden">Adicionar Projeto</button>
+            <button id="logout-btn" class="hidden">Logout</button>
+        </nav>
+        <div id="user-info"></div>
+    </header>
+    <main>
+        <div class="search-container">
+            <form id="search-form">
+                <input type="search" id="search-input" placeholder="Buscar por nome ou palavra-chave..." value="<%= typeof searchTerm !== 'undefined' ? searchTerm : '' %>">
+                <button type="submit">Buscar</button>
+            </form>
+        </div>
+
+        <div id="projetos-container">
+            <% if (typeof projetos !== 'undefined' && projetos.length > 0) { %>
+                <% projetos.forEach(projeto => { %>
+                    <div class="card" data-project-id="<%= projeto._id %>" data-dev-ids="<%= JSON.stringify((projeto.desenvolvedores || []).map(d=>d._id)) %>">
+                        <h2><%= projeto.nome %></h2>
+                        <p><%= projeto.resumo %></p>
+                        <% const devNames = (projeto.desenvolvedores || []).map(dev => dev.nome).join(', '); %>
+                        <p class="developers">Desenvolvedores: <%= devNames %></p>
+                        <a href="<%= projeto.link %>" target="_blank" rel="noopener noreferrer">Ver Projeto</a>
+                        <div class="card-actions"></div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p class="loading">Nenhum projeto encontrado.</p>
+            <% } %>
+        </div>
+
+        <section class="report-section">
+            <h2>Domínio de Conhecimentos na Turma</h2>
+            <div id="report-container">
+                <% if (typeof relatorio !== 'undefined' && relatorio.length > 0) { %>
+                    <% relatorio.forEach(item => { %>
+                        <% const percent = item.proporcao ? (item.proporcao * 100).toFixed(0) : 0; %>
+                        <div class="report-item">
+                            <div class="report-label"><%= item.nome %></div>
+                            <div class="bar-container">
+                                <div class="bar" style="width: <%= percent %>%;"><%= percent > 15 ? percent + '%' : '' %></div>
+                            </div>
+                            <div class="report-percent"><%= percent %>%</div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p>Nenhum dado de conhecimento para exibir.</p>
+                <% } %>
+            </div>
+        </section>
+    </main>
+
+    <div id="login-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Login</h2>
+            <form id="login-form">
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+                <label for="senha">Senha:</label>
+                <input type="password" id="senha" required>
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="add-project-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Adicionar Novo Projeto</h2>
+            <form id="add-project-form">
+                <label for="proj-nome">Nome do Projeto:</label>
+                <input type="text" id="proj-nome" required>
+                <label for="proj-resumo">Resumo:</label>
+                <textarea id="proj-resumo" required></textarea>
+                <label for="proj-link">Link Externo:</label>
+                <input type="url" id="proj-link" required>
+                <fieldset>
+                    <legend>Palavras-Chave</legend>
+                    <div id="proj-keywords-container"></div>
+                </fieldset>
+                <fieldset>
+                    <legend>Outros Desenvolvedores</legend>
+                    <div id="proj-devs-container"></div>
+                </fieldset>
+                <button type="submit">Salvar Projeto</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="edit-project-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Editar Projeto</h2>
+            <form id="edit-project-form">
+                <input type="hidden" id="edit-proj-id">
+                <label for="edit-proj-nome">Nome do Projeto:</label>
+                <input type="text" id="edit-proj-nome" required>
+                <label for="edit-proj-resumo">Resumo:</label>
+                <textarea id="edit-proj-resumo" required></textarea>
+                <label for="edit-proj-link">Link Externo:</label>
+                <input type="url" id="edit-proj-link" required>
+                <fieldset>
+                    <legend>Palavras-Chave</legend>
+                    <div id="edit-proj-keywords-container"></div>
+                </fieldset>
+                <fieldset>
+                    <legend>Outros Desenvolvedores</legend>
+                    <div id="edit-proj-devs-container"></div>
+                </fieldset>
+                <button type="submit">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="knowledge-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Meus Conhecimentos</h2>
+            <form id="knowledge-form">
+                <div id="knowledge-list-container">
+                    <p>Carregando conhecimentos...</p>
+                </div>
+                <button type="submit">Salvar Meus Conhecimentos</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="admin-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Painel de Administração</h2>
+            <div class="admin-panel">
+                <div class="admin-section">
+                    <h3>Gerenciar Alunos</h3>
+                    <div id="student-list-container">
+                        <p>Carregando alunos...</p>
+                    </div>
+                </div>
+                <div class="admin-section">
+                    <h3>Cadastrar Novo Aluno</h3>
+                    <form id="create-student-form">
+                        <label for="student-nome">Nome:</label>
+                        <input type="text" id="student-nome" required>
+                        <label for="student-email">Email:</label>
+                        <input type="email" id="student-email" required>
+                        <label for="student-senha">Senha:</label>
+                        <input type="password" id="student-senha" required>
+                        <button type="submit">Criar Aluno</button>
+                    </form>
+                </div>
+                <div class="admin-section">
+                    <h3>Gerenciar Palavras-Chave</h3>
+                    <div id="keyword-list-container">
+                        <p>Carregando palavras-chave...</p>
+                    </div>
+                    <hr> 
+                    <h4>Cadastrar Nova Palavra-Chave</h4>
+                    <form id="create-keyword-form">
+                        <label for="keyword-nome">Nome:</label>
+                        <input type="text" id="keyword-nome" required>
+                        <button type="submit">Criar Palavra-Chave</button>
+                    </form>
+                </div>
+                <div class="admin-section">
+                    <h3>Gerenciar Conhecimentos</h3>
+                    <div id="knowledge-admin-list-container">
+                        <p>Carregando conhecimentos...</p>
+                    </div>
+                    <hr> 
+                    <h4>Cadastrar Novo Conhecimento</h4>
+                    <form id="create-knowledge-form">
+                        <label for="knowledge-nome">Nome:</label>
+                        <input type="text" id="knowledge-nome" required>
+                        <button type="submit">Criar Conhecimento</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/script.js"></script>
+</body>
+</html>
