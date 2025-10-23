@@ -1,13 +1,10 @@
-// backend/src/controllers/publicoController.js
 const Projeto = require('../models/Projeto');
 const PalavraChave = require('../models/PalavraChave');
 const ConhecimentoRelacional = require('../models/ConhecimentoRelacional');
 const Usuario = require('../models/Usuario');
 
-// [NOVA FUNÇÃO] Renderiza a página principal com dados do EJS
 exports.renderizarPaginaPrincipal = async (req, res, next) => {
   try {
-    // --- Lógica de Busca ---
     const termoBusca = req.query.search || '';
     let filtro = {};
     if (termoBusca) {
@@ -21,11 +18,10 @@ exports.renderizarPaginaPrincipal = async (req, res, next) => {
       };
     }
     const projetos = await Projeto.find(filtro)
-      .populate('desenvolvedores', 'nome email _id') // Inclui _id
+      .populate('desenvolvedores', 'nome email _id')
       .populate('palavrasChave', 'nome')
-      .sort({ createdAt: -1 }); // Ordena por mais recente
+      .sort({ createdAt: -1 });
       
-    // --- Lógica do Relatório ---
     const totalAlunos = await Usuario.countDocuments({ perfil: 'aluno' });
     let relatorio = [];
     if (totalAlunos > 0) {
