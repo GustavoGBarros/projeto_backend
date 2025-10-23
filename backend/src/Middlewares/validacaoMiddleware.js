@@ -42,10 +42,3 @@ module.exports = {
   validacaoCriacaoProjeto,
   validacaoEntidadeSimples, 
 };
-
-// ----- SUGESTÕES DE MELHORIA (não aplicadas automaticamente) -----
-// 1) Reescrever comentários muito formais/automáticos para um tom mais natural.
-// 2) Adotar nomes de variáveis mais descritivos quando possível (atenção a exports).
-// 3) Extrair trechos longos em funções utilitárias para reduzir repetição.
-// 4) Adicionar JSDoc nas funções públicas para facilitar manutenção.
-// -----------------------------------------------------------------
